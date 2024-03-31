@@ -13,8 +13,8 @@ const CodeBlockPage = () => {
     const [value, setValue] = useState("");
     const [codeblock, setCodeBlock] = useState({})
     const [isMentor, setIsMentor] = useState(false);
-    const socket = io("http://localhost:3001");
-    //const socket = io("https://remotesessionstask.onrender.com")
+    //const socket = io("http://localhost:3001");
+    const socket = io("https://remotesessionstaskserver.onrender.com")
 
     // Function to send the message to the server
     const sendMessage = (message) => {
