@@ -7,7 +7,7 @@ import './LobbyPage.css'; // Import the CSS file here
 
 const LobbyPage = () => {
 
-// --------------------------------------   if we .......  -------------------------------------- 
+// ------ Optional - use api and get request all code block information ------  
 /* 
     const [codeBlocks, setCodeBlocks] = useState([]);
     useEffect(() => {
@@ -26,7 +26,7 @@ const LobbyPage = () => {
         fetchData();
     }, []);
 */
-// --------------------------------------   if we .......  -------------------------------------- 
+
 
 return (
     <div className="lobby-container">

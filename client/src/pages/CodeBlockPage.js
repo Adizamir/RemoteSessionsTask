@@ -14,15 +14,15 @@ const CodeBlockPage = () => {
     const [messageReceived, setMessageReceived] = useState("");
     const [value, setValue] = useState("");
     const [isMentor, setIsMentor] = useState(false);
-    //const socket = io("http://localhost:3001");
-    const socket = io("https://remotesessionstask.onrender.com")
+    const socket = io("http://localhost:3001");
+    //const socket = io("https://remotesessionstask.onrender.com")
 
     // Function to send the message to the server
     const sendMessage = (message) => {
         socket.emit("client_send_new_message", { message, number: id });
     };
    
-    // ------ Optional to use api and get request the code block information ------ 
+    // ------ Optional - use api and get request the specific code block information ------ 
     /*
     useEffect(() => {
         const fetchData = async () => {
