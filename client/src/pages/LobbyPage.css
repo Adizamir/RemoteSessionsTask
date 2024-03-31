@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+:root {
+    --primary-color: #07097c; /* Primary color for links */
+    --hover-color: #8d89cd; /* Lighter shade for hover effect */
+    --text-color: #212529; /* Main text color */
+    --bg-color: #eff0f1; /* Background color */
+    --title-size: 2.5rem; /* Larger title size */
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.lobby-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    background-color: var(--bg-color);
+}
+
+.lobby-title {
+    font-size: var(--title-size);
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.code-block-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.code-block-item {
+    margin: 10px;
+}
+
+.code-block-link {
+    display: block;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: rgb(252, 248, 248);
+    border-radius: 5px;
+    text-align: center;
+    width: 200px; /* Set a fixed width for each link */
+    text-decoration: none;
+}
+
+.code-block-link:hover {
+    background-color: var(--hover-color); /* New hover color */
+    color: var(--text-color); /* Optional: Change text color on hover if needed */
+}
