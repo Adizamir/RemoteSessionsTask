@@ -24,7 +24,6 @@ const io = new Server(server,{
 })
 
 io.on("connection",  (socket) => {
-    console.log(`User Connected: ${socket.id}`);
     socket.on("user_subscribe", async (data) => {
         console.log(`User ID from user (${socket.id}): insert into room number: ${data.number}`);
         const codeBlockInfo = await CodeBlock.findById(data.number); //import code blocks by id from DB
@@ -41,13 +40,11 @@ io.on("connection",  (socket) => {
                     
     //receive a message 
     socket.on("client_send_new_message", (data) => {
-        console.log(`${socket.id} Send a message to everyone`);
         io.to(data.number).emit("all_clients_in_room_receive_message", data);
     });
 
     //user disconnected
     socket.on("user_disconnected" ,(data)  =>{
-        console.log(`User Connected: ${socket.id}`);
         if(rooms[data.number].mentor == socket.id){
             delete rooms[data.number].mentor
         }
