@@ -1,7 +1,7 @@
 RemoteSessionsTask
 Welcome to the RemoteSessionsTask project.
 
-Client demo link: https://remotesessionstaskclient.onrender.com
+Client demo link: https://remotesessionstaskclientside.onrender.com
 
 To get started, download the project and unzip the files, or fork this branch to your local machine. Then, follow these steps:
 
