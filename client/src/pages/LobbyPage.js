@@ -1,45 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios';
-import {codeblocksdata} from '../data/data';
-import './LobbyPage.css'; // Import the CSS file here
-
+import io from 'socket.io-client';
+import './LobbyPage.css'; 
 
 const LobbyPage = () => {
+    const [titles, setTitles] = useState([]); // State to store titles from WebSocket
+    const socket = io("http://localhost:3001");
 
-// ------ Optional - use api and get request all code block information ------  
-/* 
-    const [codeBlocks, setCodeBlocks] = useState([]);
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://localhost:3001/codeblocks');
-                if (Array.isArray(response.data.allCodeBlocks)) {
-                    setCodeBlocks(response.data.allCodeBlocks);
-                } else {
-                    console.error('Code blocks not found in API response:', response.data);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        fetchData();
+        socket.emit("get_titles");
+        socket.on("receive_titles", (data)=>{
+            setTitles(data.titles);
+        });
+
+        // Cleanup to avoid memory leaks
+        return () => socket.off("receive_titles");
     }, []);
-*/
 
-
-return (
-    <div className="lobby-container">
-        <h1 className="lobby-title">Choose Your Code Block</h1>
-        <ul className="code-block-list">
-            {codeblocksdata.map((block) => (
-                <li key={block._id} className="code-block-item">
-                    <Link to={`code-block-page/${block._id}`} className="code-block-link">{block.title}</Link>
-                </li>
-            ))}
-        </ul>
-    </div>
-);
+    return (
+        <div className="lobby-container">
+            <h1 className="lobby-title">Choose Your Code Block</h1>
+            <ul className="code-block-list">
+                {titles.map((title, index) => (
+                    <li key={index} className="code-block-item">
+                        <Link to={`code-block-page/${index}`} className="code-block-link">{title}</Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 };
 
 export default LobbyPage;

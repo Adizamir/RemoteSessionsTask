@@ -5,6 +5,7 @@ const app = express();
 const http = require("http");
 const {Server} = require("socket.io");
 require('dotenv').config();
+const CodeBlock = require('./models/CodeBlock.model')
 
 const rooms = {}
 //CORS is a middleware between cliend and server
@@ -22,24 +23,20 @@ const io = new Server(server,{
     }
 })
 
-io.on("connection", (socket) => {
+io.on("connection",  (socket) => {
     console.log(`User Connected: ${socket.id}`);
-    socket.on("user_subscribe", (data) => {
+    socket.on("user_subscribe", async (data) => {
         console.log(`User ID from user (${socket.id}): insert into room number: ${data.number}`);
+        const codeBlockInfo = await CodeBlock.findById(data.number); //import code blocks by id from DB
         const roomSize = io.sockets.adapter.rooms.get(data.number)?.size || 0;
-        if (roomSize === 0) {
-         rooms[data.number] = { mentor : socket.id}
-         socket.emit("role",{message:"Mentor"})
+        if (roomSize === 0 || rooms[data.number].mentor === undefined) {
+            rooms[data.number] = { mentor: socket.id };
+            socket.emit("role", { message: "Mentor", codeBlockInformation: codeBlockInfo });
+        } else {
+            socket.emit("role", { message: "Student", codeBlockInformation: codeBlockInfo });
         }
-        else if(rooms[data.number].mentor == undefined) {
-            rooms[data.number] = { mentor : socket.id}
-            socket.emit("role",{message:"Mentor"})
-        }
-        else {
-            socket.emit("role",{message:"Student"})
-        }
-        socket.join(data.number)
-
+        socket.join(data.number);
+        
       });
                     
     //receive a message 
@@ -53,8 +50,13 @@ io.on("connection", (socket) => {
         console.log(`User Connected: ${socket.id}`);
         if(rooms[data.number].mentor == socket.id){
             delete rooms[data.number].mentor
-         
         }
+    })
+     //transfer title array from db to lobby
+    socket.on("get_titles", async (data) => {
+        const allCodeBlocks =  await CodeBlock.find({});
+        const titlesArray = allCodeBlocks.map(codeBlock => codeBlock.title);
+        io.emit("receive_titles", {titles: titlesArray})
     });
     
 });

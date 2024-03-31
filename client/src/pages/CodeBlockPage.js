@@ -1,11 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import axios from 'axios';
 import io from 'socket.io-client';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import {codeblocksdata} from '../data/data'
-import styles from './CodeBlockPage.css'; // Use CSS Modules
+import styles from './CodeBlockPage.css'; 
 import { dracula } from '@uiw/codemirror-theme-dracula';
 
 const CodeBlockPage = () => {
@@ -13,6 +11,7 @@ const CodeBlockPage = () => {
     //State management 
     const [messageReceived, setMessageReceived] = useState("");
     const [value, setValue] = useState("");
+    const [codeblock, setCodeBlock] = useState({})
     const [isMentor, setIsMentor] = useState(false);
     const socket = io("http://localhost:3001");
     //const socket = io("https://remotesessionstask.onrender.com")
@@ -22,21 +21,6 @@ const CodeBlockPage = () => {
         socket.emit("client_send_new_message", { message, number: id });
     };
    
-    // ------ Optional - use api and get request the specific code block information ------ 
-    /*
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`http://localhost:3001/codeblocks/${id}`);
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        fetchData();
-    }, []);
-    */
-
     useEffect(() => {
                 
         const handleUnload = () => {
@@ -53,12 +37,11 @@ const CodeBlockPage = () => {
             setValue(data.message); // Add this line to update the CodeMirror content
         });
         socket.on("role", (data) => {
-          console.log(data.message);
+          setCodeBlock(data.codeBlockInformation)
           setIsMentor(data.message === "Mentor");
       });
-
+      
       return () => {
-        socket.off("user_subscribe");
         socket.off("all_clients_in_room_receive_message");
         socket.off("role");
         socket.off("user_disconnected");
@@ -69,7 +52,8 @@ const CodeBlockPage = () => {
       <div className={styles.container}>
           <h1>Welcome To Code Block {id}</h1>
           <h2>Role: {isMentor ? "Mentor" : "Student"}</h2>
-          <h3>Task: { codeblocksdata[id].codeContent}</h3>
+          <h3>Title: {codeblock.title}</h3>
+          <h3>Task: { codeblock.codeContent}</h3>
           <CodeMirror
               value={value}
               height="200px"
@@ -81,7 +65,7 @@ const CodeBlockPage = () => {
               }}
               readOnly={isMentor}
           />
-        <div>{codeblocksdata[id].codeSolution === value ? "😀congratulations!! for solving the problem": ""}</div> 
+        <div>{codeblock.codeSolution === value ? "😀congratulations!! for solving the problem": ""}</div> 
       </div>
   );
 };
